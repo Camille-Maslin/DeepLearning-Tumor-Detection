@@ -1,3 +1,9 @@
+# Ignore all files in the training/data folder
+training/data/*
+
+# Ignore all files in the testing_images folder
+testing_images/*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
