@@ -1,9 +1,11 @@
 """
-Brain Tumor Classification Model using Convolutional Neural Network (CNN)
+Brain Tumor Classification Model using CNN.
 
 This script implements a deep learning model for classifying brain tumor images
-using a custom CNN architecture. It includes data loading, model creation,
-training, evaluation, and result visualization.
+using a custom CNN architecture. It includes data loading,
+model creation, training, evaluation, and result visualization.
+
+Dataset link : https://www.kaggle.com/datasets/masoudnickparvar/brain-tumor-mri-dataset
 
 Author: Camille Maslin
 Date:
@@ -23,9 +25,13 @@ import pandas as pd
 os.environ['PYTHONIOENCODING'] = 'utf-8'
 sys.stdout.reconfigure(encoding='utf-8')
 
+# Print TensorFlow and Keras versions
+print(f"TensorFlow version: {tf.__version__}")
+print(f"Keras version: {tf.keras.__version__}")
+
 # Configuration
 BATCH_SIZE = 32
-IMAGE_SIZE = 256
+IMAGE_SIZE = 256 
 CHANNELS = 3
 EPOCHS = 20
 
@@ -59,10 +65,6 @@ def load_data(data_dir, batch_size, image_size):
 dataset = load_data(data_dir, BATCH_SIZE, IMAGE_SIZE)
 test_dataset = load_data(test_data_dir, BATCH_SIZE, IMAGE_SIZE)
 
-# Get class names
-class_names = dataset.class_names
-n_classes = len(class_names)
-
 def split_dataset(ds, train_split=0.9, val_split=0.1, shuffle=True, shuffle_size=10000):
     """
     Split the dataset into training and validation sets.
@@ -83,9 +85,10 @@ def split_dataset(ds, train_split=0.9, val_split=0.1, shuffle=True, shuffle_size
         ds = ds.shuffle(shuffle_size, seed=12)
     
     train_size = int(train_split * ds_size)
+    val_size = int(val_split * ds_size)
     
     train_ds = ds.take(train_size)    
-    val_ds = ds.skip(train_size)
+    val_ds = ds.skip(train_size).take(val_size)
     
     return train_ds, val_ds
 
@@ -94,7 +97,13 @@ train_ds, val_ds = split_dataset(dataset)
 
 # Optimize performance
 AUTOTUNE = tf.data.AUTOTUNE
-train_ds = train_ds.cache().shuffle(1000).prefetch(buffer_size=AUTOTUNE)
+SHUFFLE_BUFFER_SIZE = 1000
+
+ # Define classes names
+class_names = ['glioma', 'meningioma', 'notumor', 'pituitary']
+n_classes = len(class_names)
+
+train_ds = train_ds.cache().shuffle(SHUFFLE_BUFFER_SIZE).prefetch(buffer_size=AUTOTUNE)
 val_ds = val_ds.cache().prefetch(buffer_size=AUTOTUNE)
 test_dataset = test_dataset.cache().prefetch(buffer_size=AUTOTUNE)
 
@@ -105,6 +114,7 @@ def create_model():
     Returns:
         tf.keras.Model: Compiled model ready for training.
     """
+
     model = models.Sequential([
         layers.Rescaling(1./255, input_shape=(IMAGE_SIZE, IMAGE_SIZE, CHANNELS)),
         layers.Conv2D(16, 3, padding='same', activation='relu'),
@@ -236,14 +246,13 @@ def create_confusion_matrix(model, test_dataset):
 # Create confusion matrix
 create_confusion_matrix(model, test_dataset)
 
-def create_prediction_diagrams(model, test_dataset, class_names):
+def create_prediction_diagrams(model, test_dataset):
     """
     Create and save prediction diagrams.
     
     Args:
         model (tf.keras.Model): Trained model.
         test_dataset (tf.data.Dataset): Test dataset.
-        class_names (list): List of class names.
     """
     all_predictions = []
     all_true_labels = []
@@ -283,7 +292,7 @@ def create_prediction_diagrams(model, test_dataset, class_names):
     plt.close()
 
 # Create prediction diagrams
-create_prediction_diagrams(model, test_dataset, class_names)
+create_prediction_diagrams(model, test_dataset)
 
 # Save the model
 model.save(os.path.join(current_dir, "brain_tumor_model.keras"))
