@@ -1,44 +1,84 @@
-# BrainScan-AI
+# Deep Learning Tumor Detection
 
-## Overview
-BrainScan-AI is a deep learning project focused on automated brain tumor detection using medical imaging. This project leverages state-of-the-art deep learning techniques to assist medical professionals in identifying and analyzing brain tumors from MRI scans.
+A deep learning project for detecting brain tumors in medical images.
 
-## Features
-- Advanced tumor detection using deep learning models
-- Support for MRI scan analysis
-- High accuracy prediction capabilities
+## Project Structure
 
-## Technologies Used
-- Python
-- TensorFlow/PyTorch
-- OpenCV
-- NumPy
-- Scikit-learn
+```
+DeepLearning-Tumor-Detection/
+├── src/                    # Code source principal
+│   ├── data/              # Gestion des données
+│   │   ├── augmentation/  # Data augmentation
+│   │   └── preprocessing/ # Prétraitement des données
+│   ├── models/            # Définitions des modèles
+│   └── utils/             # Utilitaires et fonctions communes
+├── configs/               # Fichiers de configuration
+├── tests/                 # Tests unitaires
+├── notebooks/            # Jupyter notebooks pour l'exploration
+├── docs/                 # Documentation
+└── requirements.txt      # Dépendances du projet
+```
 
 ## Installation
+
+1. Clone the repository:
 ```bash
-# Clone the repository
-git clone https://github.com/camille-maslin/BrainScan-AI.git
+git clone https://github.com/yourusername/DeepLearning-Tumor-Detection.git
+cd DeepLearning-Tumor-Detection
+```
 
-# Navigate to project directory
-cd BrainScan-AI
+2. Create a virtual environment (recommended):
+```bash
+python -m venv venv
+source venv/bin/activate  # On Unix/macOS
+# OR
+venv\Scripts\activate     # On Windows
+```
 
-# Install required dependencies
+3. Install dependencies:
+```bash
 pip install -r requirements.txt
 ```
 
 ## Usage
-[Usage instructions will be added as the project develops]
 
-## Project Structure
+### Data Augmentation
+
+The project includes a robust image augmentation pipeline for enhancing the training dataset:
+
+```python
+from src.data.augmentation.image_augmentation import ImageAugmentor
+
+augmentor = ImageAugmentor(
+    image_size=256,
+    augmentation_factor=2
+)
+
+augmentor.process_directory(
+    input_dir="path/to/input/images",
+    output_dir="path/to/output/images"
+)
 ```
-BrainScan-AI/
-├── data/              # Dataset directory
-├── models/            # Trained models
-├── src/              # Source code
-├── tests/            # Unit tests ( IN COMING )
-└── notebooks/        # Jupyter notebooks for analysis ( IN COMING )
-```
+
+## Features
+
+- Image data augmentation with configurable parameters
+- Support for various image formats and color spaces
+- Automated preprocessing pipeline
+- (More features to be added)
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ## License
-This project is licensed under the MIT License - see the LICENSE file for details.
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Authors
+
+- Camille Maslin
